@@ -52,11 +52,13 @@ class GoogleAuthController extends Controller
             return redirect()->route('login')->with('error', 'Login Google gagal. Cek konfigurasi Client ID, Client Secret, Redirect URI, dan database.');
         }
 
+        $name = $googleUser->getName() ?? 'User';
+
         // Cari atau buat User berdasarkan email Google
         $user = User::updateOrCreate(
             ['email' => $googleUser->getEmail()],
             [
-                'name' => $googleUser->getName(),
+                'name' => $name,
                 'google_id' => $googleUser->getId(),
                 'avatar' => $googleUser->getAvatar(),
                 'provider' => 'google',
@@ -80,13 +82,13 @@ class GoogleAuthController extends Controller
         } else {
             $mahasiswa = Mahasiswa::create([
                 'user_id' => $user->id,
-                'nama' => $googleUser->getName(),
+                'nama' => $name,
                 'email' => $googleUser->getEmail(),
                 'google_id' => $googleUser->getId(),
                 'avatar' => $googleUser->getAvatar(),
                 'provider' => 'google',
                 'password' => Hash::make(Str::random(32)),
-                'username' => 'google_' . Str::slug($googleUser->getName()) . '_' . Str::random(5),
+                'username' => 'google_' . Str::slug($name) . '_' . Str::random(5),
                 'profile_completed' => false,
             ]);
         }
