@@ -52,61 +52,74 @@ class GoogleAuthController extends Controller
             return redirect()->route('login')->with('error', 'Login Google gagal. Cek konfigurasi Client ID, Client Secret, Redirect URI, dan database.');
         }
 
-        $name = $googleUser->getName() ?? 'User';
+        try {
+            $name = $googleUser->getName() ?? 'User';
+            $email = $googleUser->getEmail();
 
-        // Cari atau buat User berdasarkan email Google
-        $user = User::updateOrCreate(
-            ['email' => $googleUser->getEmail()],
-            [
-                'name' => $name,
-                'google_id' => $googleUser->getId(),
-                'avatar' => $googleUser->getAvatar(),
-                'provider' => 'google',
-                'email_verified_at' => now(),
-                'password' => Hash::make(Str::random(32)),
-            ]
-        );
+            if (!$email) {
+                return redirect()->route('login')->with('error', 'Akun Google Anda tidak membagikan alamat email yang valid.');
+            }
 
-        // Cari atau buat Mahasiswa untuk backward compatibility profil
-        $mahasiswa = Mahasiswa::where('email', $googleUser->getEmail())
-            ->orWhere('google_id', $googleUser->getId())
-            ->first();
+            // Cari atau buat User berdasarkan email Google
+            $user = User::updateOrCreate(
+                ['email' => $email],
+                [
+                    'name' => $name,
+                    'google_id' => $googleUser->getId(),
+                    'avatar' => $googleUser->getAvatar(),
+                    'provider' => 'google',
+                    'email_verified_at' => now(),
+                    'password' => Hash::make(Str::random(32)),
+                ]
+            );
 
-        if ($mahasiswa) {
-            $mahasiswa->update([
-                'user_id' => $user->id,
-                'google_id' => $googleUser->getId(),
-                'avatar' => $googleUser->getAvatar(),
-                'provider' => 'google',
+            // Cari atau buat Mahasiswa untuk backward compatibility profil
+            $mahasiswa = Mahasiswa::where('email', $email)
+                ->orWhere('google_id', $googleUser->getId())
+                ->first();
+
+            if ($mahasiswa) {
+                $mahasiswa->update([
+                    'user_id' => $user->id,
+                    'google_id' => $googleUser->getId(),
+                    'avatar' => $googleUser->getAvatar(),
+                    'provider' => 'google',
+                ]);
+            } else {
+                $mahasiswa = Mahasiswa::create([
+                    'user_id' => $user->id,
+                    'nama' => $name,
+                    'email' => $email,
+                    'google_id' => $googleUser->getId(),
+                    'avatar' => $googleUser->getAvatar(),
+                    'provider' => 'google',
+                    'password' => Hash::make(Str::random(32)),
+                    'username' => 'google_' . Str::slug($name) . '_' . Str::random(5),
+                    'profile_completed' => false,
+                ]);
+            }
+
+            Auth::login($user);
+
+            // Set session manual seperti login biasa (backward compatibility views)
+            session([
+                'mahasiswa_id' => $mahasiswa->id,
+                'mahasiswa_nama' => $mahasiswa->nama,
+                'mahasiswa_email' => $mahasiswa->email,
             ]);
-        } else {
-            $mahasiswa = Mahasiswa::create([
-                'user_id' => $user->id,
-                'nama' => $name,
-                'email' => $googleUser->getEmail(),
-                'google_id' => $googleUser->getId(),
-                'avatar' => $googleUser->getAvatar(),
-                'provider' => 'google',
-                'password' => Hash::make(Str::random(32)),
-                'username' => 'google_' . Str::slug($name) . '_' . Str::random(5),
-                'profile_completed' => false,
+
+            if (!$mahasiswa->profile_completed) {
+                return redirect()->route('profil.lengkapi')
+                    ->with('success', 'Login Google berhasil! Lengkapi profilmu dulu ya.');
+            }
+
+            return redirect()->route('dashboard');
+
+        } catch (\Exception $e) {
+            Log::error('Google Login DB Error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
             ]);
+            return redirect()->route('login')->with('error', 'Terjadi kesalahan sistem saat menyimpan data login: ' . $e->getMessage());
         }
-
-        Auth::login($user);
-
-        // Set session manual seperti login biasa (backward compatibility views)
-        session([
-            'mahasiswa_id' => $mahasiswa->id,
-            'mahasiswa_nama' => $mahasiswa->nama,
-            'mahasiswa_email' => $mahasiswa->email,
-        ]);
-
-        if (!$mahasiswa->profile_completed) {
-            return redirect()->route('profil.lengkapi')
-                ->with('success', 'Login Google berhasil! Lengkapi profilmu dulu ya.');
-        }
-
-        return redirect()->route('dashboard');
     }
 }
