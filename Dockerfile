@@ -7,7 +7,7 @@ WORKDIR /var/www/html
 
 RUN apt-get update && apt-get install -y \
     git unzip zip curl \
-    libzip-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
+    libzip-dev libpng-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
     libonig-dev libxml2-dev default-mysql-client \
     nodejs npm \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -31,11 +31,6 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 RUN if [ -f package.json ]; then npm install && npm run build && test -f public/build/manifest.json; fi
-
-RUN php artisan optimize:clear \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
 
 RUN mkdir -p storage bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
