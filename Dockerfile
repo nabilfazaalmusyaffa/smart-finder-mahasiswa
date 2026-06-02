@@ -1,60 +1,60 @@
-FROM php:8.4-apache
+FROM php:8.3-apache
 
-# Install dependencies for Laravel and Node.js
+WORKDIR /var/www/html
+
+# Install dependency Laravel
 RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    curl \
+    libzip-dev \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    git \
-    curl \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql zip
+    libonig-dev \
+    libxml2-dev \
+    default-mysql-client \
+    nodejs \
+    npm \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache mod_rewrite
+# Apache: pakai hanya mpm_prefork dan rewrite
 RUN set -eux; \
-    a2dismod -f mpm_event mpm_worker mpm_prefork || true; \
     rm -f /etc/apache2/mods-enabled/mpm_event.*; \
     rm -f /etc/apache2/mods-enabled/mpm_worker.*; \
     rm -f /etc/apache2/mods-enabled/mpm_prefork.*; \
-    a2enmod mpm_prefork rewrite; \
-    ls -la /etc/apache2/mods-enabled/ | grep mpm; \
-    apache2ctl configtest
+    a2enmod mpm_prefork rewrite
+
+# Arahkan Apache ke folder public Laravel
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
+    /etc/apache2/sites-available/*.conf \
+    /etc/apache2/apache2.conf \
+    /etc/apache2/conf-available/*.conf
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Copy project files
+# Copy project
 COPY . .
 
-# Set Apache DocumentRoot to public folder
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-# Install PHP dependencies
+# Install dependency PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Install Node dependencies and build assets
-RUN npm install && npm run build
+# Build asset frontend jika ada package.json
+RUN if [ -f package.json ]; then npm install && npm run build; fi
 
-# Set permissions for Laravel
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Permission Laravel
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
-# Copy and setup start script
-COPY docker/start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
+# Jangan sampai storage:link bikin crash kalau sudah ada
+RUN php artisan storage:link || true
 
-# Expose port 80
 EXPOSE 80
 
-# Start script
-CMD ["/usr/local/bin/start.sh"]
+CMD ["apache2-foreground"]
