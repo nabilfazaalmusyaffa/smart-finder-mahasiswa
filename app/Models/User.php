@@ -23,6 +23,8 @@ class User extends Authenticatable
         'avatar',
         'provider',
         'email_verified_at',
+        'is_online',
+        'last_seen',
     ];
 
     protected $hidden = [
@@ -55,11 +57,11 @@ class User extends Authenticatable
         if (!$this->last_seen) {
             return 'offline';
         }
-        return $this->last_seen->gt(now()->subMinutes(5)) ? 'online' : 'offline';
+        return $this->last_seen->gt(now()->subMinutes(2)) ? 'online' : 'offline';
     }
 
     public function getIsCurrentlyOnlineAttribute()
     {
-        return $this->last_seen && $this->last_seen->gt(now()->subMinutes(5));
+        return $this->last_seen && $this->last_seen->gt(now()->subMinutes(2));
     }
 }

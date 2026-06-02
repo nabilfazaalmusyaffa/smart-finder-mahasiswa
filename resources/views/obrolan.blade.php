@@ -408,7 +408,7 @@
                             @else
                                 {{ strtoupper(substr($partnerItem->name, 0, 1)) }}
                             @endif
-                            <div class="chat-online-badge {{ $partnerItem->is_currently_online ? 'online' : 'offline' }}"></div>
+                            <div class="chat-online-badge {{ $partnerItem->is_currently_online ? 'online' : 'offline' }}" data-user-status="{{ $partnerItem->id }}"></div>
                         </div>
                         <div class="chat-item-body">
                             <div class="chat-item-name">
@@ -486,8 +486,8 @@
                     <div class="chat-main-user-info">
                         <h3>{{ $partner->name }}</h3>
                         <div class="chat-user-status">
-                            <span class="status-dot {{ $partner->is_currently_online ? 'online' : 'offline' }}"></span>
-                            <span>{{ $partner->is_currently_online ? 'Online' : 'Offline' }}</span>
+                            <span class="status-dot {{ $partner->is_currently_online ? 'online' : 'offline' }}" data-header-dot="{{ $partner->id }}"></span>
+                            <span data-header-text="{{ $partner->id }}">{{ $partner->is_currently_online ? 'Online' : 'Offline' }}</span>
                         </div>
                     </div>
                 </div>
@@ -714,5 +714,48 @@
         window.visualViewport.addEventListener('resize', updateChatInputPosition);
         window.visualViewport.addEventListener('scroll', updateChatInputPosition);
     }
+
+    // Polling status online/offline realtime
+    setInterval(() => {
+        fetch('{{ route("obrolan.statuses") }}', {
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            // data is like { "user_id": "online", "another_id": "offline" }
+            for (const [userId, status] of Object.entries(data)) {
+                // Update badge di sidebar list
+                const badges = document.querySelectorAll(`[data-user-status="${userId}"]`);
+                badges.forEach(badge => {
+                    if (status === 'online') {
+                        badge.classList.add('online');
+                        badge.classList.remove('offline');
+                    } else {
+                        badge.classList.add('offline');
+                        badge.classList.remove('online');
+                    }
+                });
+
+                // Update status di header obrolan aktif
+                const headerDot = document.querySelector(`[data-header-dot="${userId}"]`);
+                const headerText = document.querySelector(`[data-header-text="${userId}"]`);
+                if (headerDot && headerText) {
+                    if (status === 'online') {
+                        headerDot.classList.add('online');
+                        headerDot.classList.remove('offline');
+                        headerText.textContent = 'Online';
+                    } else {
+                        headerDot.classList.add('offline');
+                        headerDot.classList.remove('online');
+                        headerText.textContent = 'Offline';
+                    }
+                }
+            }
+        })
+        .catch(err => console.error('Gagal mengambil status online:', err));
+    }, 10000); // 10 detik
+
 </script>
 @endsection

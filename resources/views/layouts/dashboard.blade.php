@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Smart Finder')</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('css/smartfinder.css') }}">
     @yield('styles')
     <style>
@@ -262,6 +264,22 @@
                         overlay.classList.remove('active');
                     });
                 });
+            }
+
+            // Heartbeat
+            const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+            if (csrfTokenMeta) {
+                const token = csrfTokenMeta.getAttribute('content');
+                setInterval(() => {
+                    fetch('/user/heartbeat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json'
+                        }
+                    }).catch(err => console.error('Heartbeat failed', err));
+                }, 15000); // 15 seconds as requested by user to be safe (15-30s)
             }
         });
     </script>

@@ -185,4 +185,24 @@ class ChatController extends Controller
 
         return back()->with('success', 'Pesan berhasil dihapus.');
     }
+
+    public function getStatuses()
+    {
+        $user = Auth::user();
+        
+        // Dapatkan semua ID user partner
+        $partnerIds = Conversation::where('user_one_id', $user->id)
+            ->pluck('user_two_id')
+            ->merge(
+                Conversation::where('user_two_id', $user->id)->pluck('user_one_id')
+            )->unique();
+
+        $statuses = User::whereIn('id', $partnerIds)
+            ->get(['id', 'last_seen'])
+            ->mapWithKeys(function ($partner) {
+                return [$partner->id => $partner->is_currently_online ? 'online' : 'offline'];
+            });
+
+        return response()->json($statuses);
+    }
 }

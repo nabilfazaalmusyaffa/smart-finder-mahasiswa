@@ -28,7 +28,12 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-RUN if [ -f package.json ]; then npm install && npm run build; fi
+RUN if [ -f package.json ]; then npm install && npm run build && test -f public/build/manifest.json; fi
+
+RUN php artisan optimize:clear \
+    && php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
 
 RUN mkdir -p storage bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \

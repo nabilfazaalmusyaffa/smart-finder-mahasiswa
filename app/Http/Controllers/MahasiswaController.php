@@ -134,6 +134,11 @@ class MahasiswaController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            auth()->user()->update([
+                'is_online' => true,
+                'last_seen' => now(),
+            ]);
+
             // Set backward compatibility session setup for legacy views
             $mahasiswa = Mahasiswa::where('email', $request->email)->first();
             if ($mahasiswa) {
@@ -502,5 +507,17 @@ class MahasiswaController extends Controller
     public function obrolan()
     {
         return view('obrolan');
+    }
+
+    public function heartbeat()
+    {
+        if (auth()->check()) {
+            auth()->user()->update([
+                'is_online' => true,
+                'last_seen' => now(),
+            ]);
+            return response()->json(['status' => 'success']);
+        }
+        return response()->json(['status' => 'unauthenticated'], 401);
     }
 }

@@ -23,6 +23,7 @@ class Mahasiswa extends Model
         'foto_profil',
         'topik_minat',
         'keahlian_custom',
+ 
         'profile_completed',
         'reset_code',
         'reset_code_expires_at',

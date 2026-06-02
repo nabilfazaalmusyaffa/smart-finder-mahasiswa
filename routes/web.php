@@ -31,6 +31,8 @@ Route::get('/reset-berhasil', [MahasiswaController::class, 'resetBerhasil'])->na
 
 // ── Route yang butuh login (dilindungi middleware auth) ─────────────────
 Route::middleware('auth')->group(function () {
+    Route::post('/user/heartbeat', [MahasiswaController::class, 'heartbeat'])->name('user.heartbeat');
+
     // Profil Saya
     Route::get('/profil', [MahasiswaController::class, 'profil'])->name('profil.saya');
 
@@ -75,6 +77,7 @@ Route::middleware('auth')->group(function () {
 
     // Obrolan Chat (Personal)
     Route::get('/obrolan', [App\Http\Controllers\ChatController::class, 'index'])->name('obrolan');
+    Route::get('/obrolan/statuses', [App\Http\Controllers\ChatController::class, 'getStatuses'])->name('obrolan.statuses');
     Route::get('/obrolan/{chatId}', [App\Http\Controllers\ChatController::class, 'index'])->name('obrolan.show');
     Route::post('/obrolan/{chatId}/send', [App\Http\Controllers\ChatController::class, 'send'])->name('obrolan.send');
     Route::delete('/obrolan/messages/{message}', [App\Http\Controllers\ChatController::class, 'destroyMessage'])->name('chat.messages.destroy');
