@@ -16,7 +16,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install gd pdo pdo_mysql zip
 
 # Enable Apache mod_rewrite
-RUN a2dismod mpm_event mpm_worker || true \
+RUN a2dismod -f mpm_event mpm_worker || true \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.* \
     && a2enmod mpm_prefork rewrite
 
 # Install Composer
