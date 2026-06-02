@@ -17,6 +17,8 @@ RUN apt-get update && apt-get install -y \
     && rm -f /etc/apache2/mods-enabled/mpm_worker.load \
     && rm -f /etc/apache2/mods-enabled/mpm_worker.conf \
     && a2enmod mpm_prefork rewrite \
+    && echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf \
+    && a2enconf servername \
     && sed -ri -e "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/sites-available/*.conf \
     && sed -ri -e "s!/var/www/!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf \
     && apt-get clean \
