@@ -1,13 +1,20 @@
-FROM php:8.3-cli
+FROM php:8.4-apache
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 WORKDIR /var/www/html
 
 RUN apt-get update && apt-get install -y \
     git unzip zip curl \
     libzip-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
-    libonig-dev libxml2-dev default-mysql-client nodejs npm \
+    libonig-dev libxml2-dev default-mysql-client \
+    nodejs npm \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd \
+    && a2enmod rewrite \
+    && sed -ri -e "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/sites-available/*.conf \
+    && sed -ri -e "s!/var/www/!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -19,8 +26,12 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 
 RUN if [ -f package.json ]; then npm install && npm run build; fi
 
-RUN chmod -R 775 storage bootstrap/cache || true
+RUN mkdir -p storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
-EXPOSE 8080
+EXPOSE 80
 
-CMD sh -c "php artisan config:clear || true && php artisan storage:link || true && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"
+CMD sed -i "s/Listen 80/Listen ${PORT:-80}/" /etc/apache2/ports.conf \
+    && sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT:-80}>/" /etc/apache2/sites-available/000-default.conf \
+    && apache2-foreground
