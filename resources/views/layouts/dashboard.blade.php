@@ -80,14 +80,21 @@
             <a href="{{ route('profil.saya') }}" class="mobile-avatar-link" title="Profil Saya">
                 <div class="mobile-avatar">
                     @php
-                        $namaMobile = session('mahasiswa_nama', 'User');
+                        $userMobile = \Illuminate\Support\Facades\Auth::user();
+                        $mahasiswaMobile = $userMobile ? \App\Models\Mahasiswa::where('email', $userMobile->email)->orWhere('user_id', $userMobile->id)->first() : null;
+                        $namaMobile = $mahasiswaMobile ? $mahasiswaMobile->nama : session('mahasiswa_nama', 'User');
                         $iniMobile = strtoupper(substr($namaMobile, 0, 1));
                         if (str_contains($namaMobile, ' ')) {
                             $parts = explode(' ', $namaMobile);
                             $iniMobile = strtoupper(substr($parts[0], 0, 1) . substr($parts[1], 0, 1));
                         }
+                        $fotoMobile = $mahasiswaMobile ? $mahasiswaMobile->foto_profil : null;
                     @endphp
-                    {{ $iniMobile }}
+                    @if($fotoMobile)
+                        <img src="{{ asset($fotoMobile) }}" style="width:100%; height:100%; object-fit:cover;">
+                    @else
+                        {{ $iniMobile }}
+                    @endif
                 </div>
             </a>
         </header>
@@ -200,16 +207,23 @@
             <div class="sidebar-bottom">
                 <a href="{{ route('profil.saya') }}" class="sidebar-user-profile" style="margin-bottom:16px; padding:8px 10px;">
                     @php
-                        $namaSidebar = session('mahasiswa_nama', 'User');
+                        $userSidebar = \Illuminate\Support\Facades\Auth::user();
+                        $mahasiswaSidebar = $userSidebar ? \App\Models\Mahasiswa::where('email', $userSidebar->email)->orWhere('user_id', $userSidebar->id)->first() : null;
+                        $namaSidebar = $mahasiswaSidebar ? $mahasiswaSidebar->nama : session('mahasiswa_nama', 'User');
                         $iniSidebar = strtoupper(substr($namaSidebar, 0, 1));
                         if (str_contains($namaSidebar, ' ')) {
                             $partsSidebar = explode(' ', $namaSidebar);
                             $iniSidebar = strtoupper(substr($partsSidebar[0], 0, 1) . substr($partsSidebar[1], 0, 1));
                         }
+                        $fotoSidebar = $mahasiswaSidebar ? $mahasiswaSidebar->foto_profil : null;
                     @endphp
                     <div class="sidebar-user-avatar"
-                        style="width:36px; height:36px; border-radius:50%; background:var(--white); color:var(--blue); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;">
-                        {{ $iniSidebar }}
+                        style="width:36px; height:36px; border-radius:50%; background:var(--white); color:var(--blue); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0; overflow:hidden;">
+                        @if($fotoSidebar)
+                            <img src="{{ asset($fotoSidebar) }}" style="width:100%; height:100%; object-fit:cover;">
+                        @else
+                            {{ $iniSidebar }}
+                        @endif
                     </div>
                     <div class="sidebar-user-info" style="overflow:hidden;">
                         <div

@@ -10,15 +10,24 @@
             <p>Ayo temukan partner belajar untukmu hari ini.</p>
         </div>
         @php
-            $nama = session('mahasiswa_nama', 'U');
+            $userTop = \Illuminate\Support\Facades\Auth::user();
+            $mahasiswaTop = $userTop ? \App\Models\Mahasiswa::where('email', $userTop->email)->orWhere('user_id', $userTop->id)->first() : null;
+            $nama = $mahasiswaTop ? $mahasiswaTop->nama : session('mahasiswa_nama', 'U');
             $initials = strtoupper(substr($nama, 0, 1));
             if (str_contains($nama, ' ')) {
                 $parts = explode(' ', $nama);
                 $initials = strtoupper(substr($parts[0], 0, 1) . substr($parts[1], 0, 1));
             }
+            $fotoTop = $mahasiswaTop ? $mahasiswaTop->foto_profil : null;
         @endphp
         <a href="{{ route('profil.saya') }}" class="user-avatar-link" title="Buka Profil Saya">
-            <div class="dashboard-avatar">{{ $initials }}</div>
+            <div class="dashboard-avatar" style="overflow:hidden;">
+                @if($fotoTop)
+                    <img src="{{ asset($fotoTop) }}" style="width:100%; height:100%; object-fit:cover;">
+                @else
+                    {{ $initials }}
+                @endif
+            </div>
         </a>
     </div>
 
