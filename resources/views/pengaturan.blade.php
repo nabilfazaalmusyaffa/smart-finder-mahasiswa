@@ -385,17 +385,18 @@
 
                     <!-- Avatar Upload -->
                     <div style="display:flex; align-items:center; gap:20px; margin-bottom:32px;">
-                        <div style="width:96px; height:96px; border-radius:50%; background:var(--blue); color:var(--white); display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:bold; overflow:hidden;">
+                        <div style="width:96px; height:96px; border-radius:50%; background:var(--blue); color:var(--white); display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:bold; overflow:hidden; border: 3px solid var(--blue);">
                             @if($mahasiswa && $mahasiswa->foto_profil)
-                                <img src="{{ asset($mahasiswa->foto_profil) }}" style="width:100%;height:100%;object-fit:cover;">
+                                <img id="avatar-preview" src="{{ asset($mahasiswa->foto_profil) }}" style="width:100%;height:100%;object-fit:cover;">
                             @else
-                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                                <img id="avatar-preview" src="" style="width:100%;height:100%;object-fit:cover;display:none;">
+                                <span id="avatar-initial">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
                             @endif
                         </div>
                         <div>
                             <label class="btn-secondary" style="cursor:pointer; display:inline-block; margin-bottom:8px;">
                                 Ganti Foto
-                                <input type="file" name="foto_profil" accept="image/*" style="display:none;">
+                                <input type="file" name="foto_profil" accept="image/*" style="display:none;" onchange="previewImage(event)">
                             </label>
                             <div style="font-size:12px; color:var(--gray-500);">JPG, PNG, WEBP Maks 2MB</div>
                             @error('foto_profil')
@@ -444,9 +445,21 @@
                     </div>
 
                     <div class="setting-form-group" style="margin-bottom:20px;">
-                        <label><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Link Portofolio / LinkedIn (Opsional)</label>
+                        <label><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Link Portofolio (Opsional)</label>
                         <input type="url" class="settings-input" name="portfolio_link" value="{{ old('portfolio_link', $mahasiswa->portfolio_link ?? '') }}" placeholder="https://...">
                         @error('portfolio_link') <small class="error-text">{{ $message }}</small> @enderror
+                    </div>
+
+                    <div class="setting-form-group" style="margin-bottom:20px;">
+                        <label><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:4px;"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg> Link LinkedIn (Opsional)</label>
+                        <input type="url" class="settings-input" name="linkedin_link" value="{{ old('linkedin_link', $mahasiswa->linkedin_link ?? '') }}" placeholder="https://linkedin.com/in/...">
+                        @error('linkedin_link') <small class="error-text">{{ $message }}</small> @enderror
+                    </div>
+
+                    <div class="setting-form-group" style="margin-bottom:20px;">
+                        <label><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:4px;"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg> Link GitHub (Opsional)</label>
+                        <input type="url" class="settings-input" name="github_link" value="{{ old('github_link', $mahasiswa->github_link ?? '') }}" placeholder="https://github.com/...">
+                        @error('github_link') <small class="error-text">{{ $message }}</small> @enderror
                     </div>
 
                     <div class="setting-form-group" style="margin-bottom:32px;">
@@ -533,6 +546,7 @@
                             <input type="text" id="custom-topic-input" class="settings-input" 
                                 style="width:190px; height:40px; padding:0 14px; border-radius:999px; font-size:13px;" 
                                 placeholder="Tambahkan topik lain...">
+                            <button type="button" onclick="addCustomTopic(document.getElementById('custom-topic-input').value)" class="btn-secondary" style="height:40px; border-radius:999px; padding: 0 16px; font-size:13px; cursor:pointer; background:var(--white); border:1px solid var(--gray-300); font-weight:600; color:var(--dark);">Tambah</button>
                         </div>
                     </div>
                     <small id="topic-warning" class="error-text" style="display:none; margin-bottom:16px; display:block;">Maksimal 6 topik yang dapat dipilih.</small>
@@ -978,6 +992,20 @@
                 fleksibelCb.checked = false;
                 fleksibelChip.classList.remove('active');
             }
+        }
+    }
+
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            var output = document.getElementById('avatar-preview');
+            var initial = document.getElementById('avatar-initial');
+            output.src = reader.result;
+            output.style.display = 'block';
+            if(initial) initial.style.display = 'none';
+        };
+        if(event.target.files[0]) {
+            reader.readAsDataURL(event.target.files[0]);
         }
     }
 

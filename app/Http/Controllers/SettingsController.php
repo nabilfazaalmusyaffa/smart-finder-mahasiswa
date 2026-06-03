@@ -35,6 +35,8 @@ class SettingsController extends Controller
             'angkatan' => 'required|numeric',
             'phone' => 'nullable|string',
             'portfolio_link' => 'nullable|url',
+            'linkedin_link' => 'nullable|url',
+            'github_link' => 'nullable|url',
             'bio' => 'nullable|string|max:500',
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
@@ -62,6 +64,8 @@ class SettingsController extends Controller
                 'angkatan' => $request->angkatan,
                 'phone' => $request->phone,
                 'portfolio_link' => $request->portfolio_link,
+                'linkedin_link' => $request->linkedin_link,
+                'github_link' => $request->github_link,
                 'bio' => $request->bio,
             ]);
             if ($fotoProfilPath) {
