@@ -224,8 +224,10 @@ class MahasiswaController extends Controller
         if ($request->hasFile('foto_profil')) {
             $file = $request->file('foto_profil');
             $filename = 'profil_' . $mahasiswa->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/profil'), $filename);
-            $fotoProfil = 'images/profil/' . $filename;
+            // Upload to Supabase Storage
+            \Illuminate\Support\Facades\Storage::disk('supabase')->put('images/profil/' . $filename, file_get_contents($file));
+            // Get public URL
+            $fotoProfil = \Illuminate\Support\Facades\Storage::disk('supabase')->url('images/profil/' . $filename);
         }
 
         $topics_input = $request->topik_minat ?? [];
