@@ -39,6 +39,11 @@ class SettingsController extends Controller
             'github_link' => 'nullable|url',
             'bio' => 'nullable|string|max:500',
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'foto_profil.uploaded' => 'Gagal mengunggah foto profil. Ukuran file mungkin melebihi batas (Maks 2MB) atau file tidak valid.',
+            'foto_profil.max' => 'Ukuran foto profil tidak boleh lebih dari 2MB.',
+            'foto_profil.image' => 'File harus berupa gambar.',
+            'foto_profil.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
         ]);
 
         $fotoProfilPath = $mahasiswa ? $mahasiswa->foto_profil : null;

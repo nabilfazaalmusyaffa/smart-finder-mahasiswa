@@ -216,6 +216,10 @@ class MahasiswaController extends Controller
             'universitas' => 'required|string|max:255',
             'topik_minat' => 'nullable|array|max:6',
             'foto_profil' => 'nullable|image|max:2048',
+        ], [
+            'foto_profil.uploaded' => 'Gagal mengunggah foto profil. Ukuran file mungkin melebihi batas (Maks 2MB) atau file tidak valid.',
+            'foto_profil.max' => 'Ukuran foto profil tidak boleh lebih dari 2MB.',
+            'foto_profil.image' => 'File harus berupa gambar.',
         ]);
 
         $mahasiswa = Mahasiswa::find(session('mahasiswa_id'));
