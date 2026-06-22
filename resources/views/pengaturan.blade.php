@@ -428,15 +428,29 @@
                         </div>
                     </div>
 
-                    <div class="settings-grid" style="margin-bottom:20px;">
+                    <div class="settings-grid" style="margin-bottom:20px; grid-template-columns: 1fr 1fr 1fr;">
                         <div class="setting-form-group">
                             <label><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:4px;"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> Program Studi</label>
                             <input type="text" class="settings-input" name="program_studi" value="{{ old('program_studi', $mahasiswa->program_studi ?? '') }}" required>
                             @error('program_studi') <small class="error-text">{{ $message }}</small> @enderror
                         </div>
                         <div class="setting-form-group">
+                            <label><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Provinsi Kampus</label>
+                            <select class="settings-input" id="provinsi" name="provinsi" required style="padding-right:32px;">
+                                <option value="">Pilih Provinsi</option>
+                                <!-- Populated by JS -->
+                            </select>
+                            @error('provinsi') <small class="error-text">{{ $message }}</small> @enderror
+                        </div>
+                        <div class="setting-form-group">
                             <label><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:4px;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg> Universitas</label>
-                            <input type="text" class="settings-input" name="universitas" value="{{ old('universitas', $mahasiswa->universitas ?? '') }}" required>
+                            <select class="settings-input" id="universitas" name="universitas" required style="padding-right:32px;">
+                                <option value="">Pilih Universitas</option>
+                                @if(isset($mahasiswa) && $mahasiswa->universitas)
+                                    <option value="{{ $mahasiswa->universitas }}" selected>{{ $mahasiswa->universitas }}</option>
+                                @endif
+                                <!-- Populated by JS -->
+                            </select>
                             @error('universitas') <small class="error-text">{{ $message }}</small> @enderror
                         </div>
                     </div>
@@ -522,18 +536,13 @@
                     </div>
                     <div class="setting-card-sub">Pilih topik yang kamu minati, maksimal 6. Ketik di kolom di bawah untuk menambahkan topik sendiri.</div>
                     
-                    @php 
+                    @php
                         $topics = [
-                            'Machine Learning', 'Web Dev', 'Basis Data', 'Algoritma',
-                            'Cyber Sec', 'UI/UX', 'Mobile Dev', 'Laravel', 'Python',
-                            'Data Science', 'Git & GitHub'
-                        ]; 
-                        $savedTopics = [];
-                        if ($mahasiswa && $mahasiswa->topik_minat) {
-                            $savedTopics = array_map('trim', explode(',', $mahasiswa->topik_minat));
-                            $savedTopics = array_filter($savedTopics);
-                        }
-                        $customTopics = array_filter($savedTopics, fn($t) => !in_array($t, $topics));
+                            'Programming', 'Web Dev', 'Mobile Dev', 'Data Science', 'Machine Learning', 
+                            'UI/UX Design', 'Digital Marketing', 'Copywriting', 'Bisnis & Manajemen', 
+                            'Akuntansi', 'Bahasa Asing', 'Matematika', 'Sains', 'Hukum', 'Public Speaking'
+                        ];
+                        $savedTopics = $mahasiswa ? ($mahasiswa->topik_minat ? array_map('trim', explode(',', $mahasiswa->topik_minat)) : []) : [];
                     @endphp
 
                     <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;" id="topic-container">
@@ -543,24 +552,8 @@
                                 {{ $t }}
                             </label>
                         @endforeach
-
-                        @foreach($customTopics as $ct)
-                            <label class="preference-chip active custom-topic-chip">
-                                <input type="checkbox" name="topik_minat[]" value="{{ $ct }}" class="hidden-checkbox topic-checkbox" checked>
-                                {{ $ct }}
-                                <span class="chip-remove" onclick="removeCustomChip(this)" style="margin-left:6px; cursor:pointer; font-weight:700; color:var(--blue);">✕</span>
-                            </label>
-                        @endforeach
-
-                        <div style="display:inline-flex; align-items:center; gap:8px;" id="custom-input-wrapper">
-                            <input type="text" id="custom-topic-input" class="settings-input" 
-                                style="width:190px; height:40px; padding:0 14px; border-radius:999px; font-size:13px;" 
-                                placeholder="Tambahkan topik lain...">
-                            <button type="button" onclick="addCustomTopic(document.getElementById('custom-topic-input').value)" class="btn-secondary" style="height:40px; border-radius:999px; padding: 0 16px; font-size:13px; cursor:pointer; background:var(--white); border:1px solid var(--gray-300); font-weight:600; color:var(--dark);">Tambah</button>
-                        </div>
                     </div>
-                    <small id="topic-warning" class="error-text" style="display:none; margin-bottom:16px; display:block;">Maksimal 6 topik yang dapat dipilih.</small>
-                    <small id="topic-duplicate-warning" class="error-text" style="display:none; margin-bottom:16px; display:block;">Topik tersebut sudah ada.</small>
+                    <small id="topic-warning" class="error-text" style="display:none; margin-bottom:16px;">Maksimal 6 topik yang dapat dipilih.</small>
                 </div>
 
                 <!-- TINGKAT KEMAMPUAN -->
@@ -1016,6 +1009,55 @@
         };
         if(event.target.files[0]) {
             reader.readAsDataURL(event.target.files[0]);
+        }
+    }
+
+    // Load data universitas
+    let dataUniversitas = [];
+    const savedProvinsi = "{{ isset($mahasiswa) ? $mahasiswa->provinsi : '' }}";
+    const savedUniversitas = "{{ isset($mahasiswa) ? $mahasiswa->universitas : '' }}";
+
+    fetch('/data/universitas.json')
+        .then(res => res.json())
+        .then(data => {
+            dataUniversitas = data;
+            const provSelect = document.getElementById('provinsi');
+            
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.provinsi;
+                option.textContent = item.provinsi;
+                if (item.provinsi === savedProvinsi) {
+                    option.selected = true;
+                }
+                provSelect.appendChild(option);
+            });
+
+            if (savedProvinsi) {
+                populateUniversitas(savedProvinsi, savedUniversitas);
+            }
+        })
+        .catch(err => console.error("Gagal memuat data universitas", err));
+
+    document.getElementById('provinsi').addEventListener('change', function() {
+        populateUniversitas(this.value);
+    });
+
+    function populateUniversitas(provinsi, selectedUniv = '') {
+        const univSelect = document.getElementById('universitas');
+        univSelect.innerHTML = '<option value="">Pilih Universitas</option>';
+        
+        if (!provinsi) return;
+
+        const provData = dataUniversitas.find(p => p.provinsi === provinsi);
+        if (provData) {
+            provData.universitas.forEach(univ => {
+                const option = document.createElement('option');
+                option.value = univ;
+                option.textContent = univ;
+                if (univ === selectedUniv) option.selected = true;
+                univSelect.appendChild(option);
+            });
         }
     }
 

@@ -31,6 +31,7 @@ class SettingsController extends Controller
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'program_studi' => 'required|string',
+            'provinsi' => 'required|string',
             'universitas' => 'required|string',
             'angkatan' => 'required|numeric',
             'phone' => 'nullable|string',
@@ -82,6 +83,7 @@ class SettingsController extends Controller
                 'nama' => $request->nama,
                 'email' => $request->email,
                 'program_studi' => $request->program_studi,
+                'provinsi' => $request->provinsi,
                 'universitas' => $request->universitas,
                 'angkatan' => $request->angkatan,
                 'phone' => $request->phone,
@@ -111,8 +113,12 @@ class SettingsController extends Controller
                 'waktu_belajar' => 'nullable|array',
             ]);
 
+            $topikString = $request->topik_minat ? implode(',', $request->topik_minat) : null;
             $mahasiswa->update([
-                'topik_minat' => $request->topik_minat ? implode(',', $request->topik_minat) : null,
+                'topik_minat' => $topikString,
+                'keahlian_custom' => null, // remove custom
+                'minat_belajar' => $topikString,
+                'skill' => $topikString,
                 'tingkat_kemampuan' => $request->tingkat_kemampuan,
                 'waktu_belajar' => $request->waktu_belajar,
             ]);

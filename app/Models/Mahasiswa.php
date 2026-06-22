@@ -21,6 +21,7 @@ class Mahasiswa extends Model
         'jadwal_kosong',
         'program_studi',
         'universitas',
+        'provinsi',
         'foto_profil',
         'topik_minat',
         'keahlian_custom',

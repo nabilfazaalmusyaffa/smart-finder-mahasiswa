@@ -1,0 +1,176 @@
+[
+  {
+    "provinsi": "DKI Jakarta",
+    "universitas": [
+      "Universitas Indonesia (UI)",
+      "Universitas Negeri Jakarta (UNJ)",
+      "UIN Syarif Hidayatullah Jakarta",
+      "Universitas Bina Nusantara (BINUS)",
+      "Universitas Trisakti",
+      "Universitas Tarumanagara (UNTAR)",
+      "Universitas Pembangunan Nasional Veteran Jakarta",
+      "Universitas Mercu Buana",
+      "Universitas Pancasila",
+      "Universitas Katolik Atma Jaya"
+    ]
+  },
+  {
+    "provinsi": "Jawa Barat",
+    "universitas": [
+      "Institut Teknologi Bandung (ITB)",
+      "Universitas Padjadjaran (UNPAD)",
+      "Institut Pertanian Bogor (IPB)",
+      "Universitas Pendidikan Indonesia (UPI)",
+      "UIN Sunan Gunung Djati",
+      "Telkom University",
+      "Universitas Katolik Parahyangan (UNPAR)",
+      "Universitas Telkom",
+      "Universitas Pasundan",
+      "Universitas Gunadarma (Depok)"
+    ]
+  },
+  {
+    "provinsi": "Jawa Tengah",
+    "universitas": [
+      "Universitas Diponegoro (UNDIP)",
+      "Universitas Sebelas Maret (UNS)",
+      "Universitas Jenderal Soedirman (UNSOED)",
+      "Universitas Negeri Semarang (UNNES)",
+      "UIN Walisongo",
+      "Universitas Muhammadiyah Surakarta (UMS)",
+      "Universitas Kristen Satya Wacana (UKSW)",
+      "Universitas Katolik Soegijapranata",
+      "Universitas Dian Nuswantoro (UDINUS)"
+    ]
+  },
+  {
+    "provinsi": "DI Yogyakarta",
+    "universitas": [
+      "Universitas Gadjah Mada (UGM)",
+      "Universitas Negeri Yogyakarta (UNY)",
+      "UIN Sunan Kalijaga",
+      "Universitas Pembangunan Nasional Veteran Yogyakarta",
+      "Universitas Islam Indonesia (UII)",
+      "Universitas Muhammadiyah Yogyakarta (UMY)",
+      "Universitas Atma Jaya Yogyakarta (UAJY)",
+      "Universitas Sanata Dharma",
+      "Universitas Ahmad Dahlan (UAD)"
+    ]
+  },
+  {
+    "provinsi": "Jawa Timur",
+    "universitas": [
+      "Institut Teknologi Sepuluh Nopember (ITS)",
+      "Universitas Airlangga (UNAIR)",
+      "Universitas Brawijaya (UB)",
+      "Universitas Negeri Malang (UM)",
+      "Universitas Negeri Surabaya (UNESA)",
+      "Universitas Jember (UNEJ)",
+      "UIN Sunan Ampel",
+      "Universitas Muhammadiyah Malang (UMM)",
+      "Universitas Kristen Petra",
+      "Universitas Surabaya (UBAYA)"
+    ]
+  },
+  {
+    "provinsi": "Banten",
+    "universitas": [
+      "Universitas Sultan Ageng Tirtayasa (UNTIRTA)",
+      "UIN Sultan Maulana Hasanuddin",
+      "Universitas Pelita Harapan (UPH)",
+      "Universitas Multimedia Nusantara (UMN)",
+      "Universitas Pamulang (UNPAM)"
+    ]
+  },
+  {
+    "provinsi": "Sumatera Utara",
+    "universitas": [
+      "Universitas Sumatera Utara (USU)",
+      "Universitas Negeri Medan (UNIMED)",
+      "UIN Sumatera Utara",
+      "Universitas Muhammadiyah Sumatera Utara (UMSU)",
+      "Universitas HKBP Nommensen"
+    ]
+  },
+  {
+    "provinsi": "Sumatera Barat",
+    "universitas": [
+      "Universitas Andalas (UNAND)",
+      "Universitas Negeri Padang (UNP)",
+      "UIN Imam Bonjol",
+      "Universitas Bung Hatta"
+    ]
+  },
+  {
+    "provinsi": "Sumatera Selatan",
+    "universitas": [
+      "Universitas Sriwijaya (UNSRI)",
+      "UIN Raden Fatah",
+      "Universitas Bina Darma",
+      "Universitas Muhammadiyah Palembang"
+    ]
+  },
+  {
+    "provinsi": "Riau",
+    "universitas": [
+      "Universitas Riau (UNRI)",
+      "UIN Sultan Syarif Kasim",
+      "Universitas Islam Riau (UIR)",
+      "Universitas Muhammadiyah Riau"
+    ]
+  },
+  {
+    "provinsi": "Bali",
+    "universitas": [
+      "Universitas Udayana (UNUD)",
+      "Universitas Pendidikan Ganesha (UNDIKSHA)",
+      "Institut Seni Indonesia Denpasar",
+      "Universitas Warmadewa"
+    ]
+  },
+  {
+    "provinsi": "Sulawesi Selatan",
+    "universitas": [
+      "Universitas Hasanuddin (UNHAS)",
+      "Universitas Negeri Makassar (UNM)",
+      "UIN Alauddin",
+      "Universitas Muslim Indonesia (UMI)",
+      "Universitas Muhammadiyah Makassar"
+    ]
+  },
+  {
+    "provinsi": "Sulawesi Utara",
+    "universitas": [
+      "Universitas Sam Ratulangi (UNSRAT)",
+      "Universitas Negeri Manado (UNIMA)"
+    ]
+  },
+  {
+    "provinsi": "Kalimantan Timur",
+    "universitas": [
+      "Universitas Mulawarman (UNMUL)",
+      "Institut Teknologi Kalimantan (ITK)"
+    ]
+  },
+  {
+    "provinsi": "Kalimantan Selatan",
+    "universitas": [
+      "Universitas Lambung Mangkurat (ULM)",
+      "UIN Antasari"
+    ]
+  },
+  {
+    "provinsi": "Lainnya",
+    "universitas": [
+      "Universitas Syiah Kuala (Aceh)",
+      "Universitas Lampung (Lampung)",
+      "Universitas Jambi (Jambi)",
+      "Universitas Tanjungpura (Kalbar)",
+      "Universitas Palangka Raya (Kalteng)",
+      "Universitas Mataram (NTB)",
+      "Universitas Nusa Cendana (NTT)",
+      "Universitas Pattimura (Maluku)",
+      "Universitas Cenderawasih (Papua)"
+    ]
+  }
+]

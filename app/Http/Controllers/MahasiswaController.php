@@ -213,6 +213,7 @@ class MahasiswaController extends Controller
 
         $request->validate([
             'program_studi' => 'required|string|max:255',
+            'provinsi' => 'required|string|max:255',
             'universitas' => 'required|string|max:255',
             'topik_minat' => 'nullable|array|max:6',
             'foto_profil' => 'nullable|image|max:2048',
@@ -250,18 +251,14 @@ class MahasiswaController extends Controller
         }
 
         $topics_input = $request->topik_minat ?? [];
-        $predefined = ['Machine Learning', 'Web Dev', 'Basis Data', 'Algoritma', 'Cyber Sec', 'Lainnya'];
-        $customs = array_diff($topics_input, $predefined);
-
         $topik_string = empty($topics_input) ? null : implode(',', $topics_input);
-        $keahlian_custom_string = empty($customs) ? null : implode(',', $customs);
 
         $mahasiswa->update([
             'program_studi' => $request->program_studi,
+            'provinsi' => $request->provinsi,
             'universitas' => $request->universitas,
             'foto_profil' => $fotoProfil,
             'topik_minat' => $topik_string,
-            'keahlian_custom' => $keahlian_custom_string,
             'jurusan' => $request->program_studi,
             'minat_belajar' => $topik_string,
             'skill' => $topik_string,
