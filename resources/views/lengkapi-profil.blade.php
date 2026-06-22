@@ -35,7 +35,7 @@
                 <label for="foto_upload" style="cursor:pointer;">
                     <div class="profil-avatar" id="avatarPreview">
                         @if($mahasiswa->foto_profil)
-                            <img src="{{ asset($mahasiswa->foto_profil) }}"
+                            <img src="{{ foto_profil_url($mahasiswa->foto_profil) }}"
                                 style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                         @else
                             {{ $initials }}

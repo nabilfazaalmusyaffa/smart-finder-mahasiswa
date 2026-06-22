@@ -91,7 +91,7 @@
                         $fotoMobile = $mahasiswaMobile ? $mahasiswaMobile->foto_profil : null;
                     @endphp
                     @if($fotoMobile)
-                        <img src="{{ asset($fotoMobile) }}" style="width:100%; height:100%; object-fit:cover;">
+                        <img src="{{ foto_profil_url($fotoMobile) }}" style="width:100%; height:100%; object-fit:cover;">
                     @else
                         {{ $iniMobile }}
                     @endif
@@ -220,7 +220,7 @@
                     <div class="sidebar-user-avatar"
                         style="width:36px; height:36px; border-radius:50%; background:var(--white); color:var(--blue); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0; overflow:hidden;">
                         @if($fotoSidebar)
-                            <img src="{{ asset($fotoSidebar) }}" style="width:100%; height:100%; object-fit:cover;">
+                            <img src="{{ foto_profil_url($fotoSidebar) }}" style="width:100%; height:100%; object-fit:cover;">
                         @else
                             {{ $iniSidebar }}
                         @endif

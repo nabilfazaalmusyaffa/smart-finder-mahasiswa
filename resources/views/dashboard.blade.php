@@ -23,7 +23,7 @@
         <a href="{{ route('profil.saya') }}" class="user-avatar-link" title="Buka Profil Saya">
             <div class="dashboard-avatar" style="overflow:hidden;">
                 @if($fotoTop)
-                    <img src="{{ asset($fotoTop) }}" style="width:100%; height:100%; object-fit:cover;">
+                    <img src="{{ foto_profil_url($fotoTop) }}" style="width:100%; height:100%; object-fit:cover;">
                 @else
                     {{ $initials }}
                 @endif
@@ -73,7 +73,7 @@
                 <div>
                     <div class="partner-initials" style="background:var(--blue);">
                         @if($p && $p->foto_profil)
-                            <img src="{{ asset($p->foto_profil) }}"
+                            <img src="{{ foto_profil_url($p->foto_profil) }}"
                                 style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                         @else
                             {{ $p_initials }}

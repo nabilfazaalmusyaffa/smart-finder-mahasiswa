@@ -307,7 +307,7 @@
                 <div class="avatar-wrapper">
                     <div class="avatar-circle">
                         @if($mahasiswa && $mahasiswa->foto_profil)
-                            <img src="{{ asset($mahasiswa->foto_profil) }}" alt="Avatar" class="avatar-img">
+                            <img src="{{ foto_profil_url($mahasiswa->foto_profil) }}" alt="Avatar" class="avatar-img">
                         @else
                             @php
                                 $nama = $mahasiswa ? $mahasiswa->nama : Auth::user()->name;

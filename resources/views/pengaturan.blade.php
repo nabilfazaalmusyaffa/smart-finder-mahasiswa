@@ -132,7 +132,7 @@
     width: 100%;
     padding: 14px 16px;
     border-radius: var(--radius-md);
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid #0f172a;
     font-size: 14px;
     color: var(--dark);
     background: var(--white);
@@ -145,7 +145,7 @@
     outline: none;
     border-color: var(--blue);
     background: var(--white);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .setting-form-group textarea {
     resize: vertical;
@@ -199,7 +199,7 @@
 .settings-input {
     width: 100%;
     padding: 14px 16px;
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid #0f172a;
     border-radius: 12px;
     background: var(--white);
     font-size: 15px;
@@ -211,12 +211,12 @@
 .settings-input:focus {
     border-color: var(--blue);
     background: var(--white);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .settings-textarea {
     width: 100%;
     padding: 14px 16px;
-    border: 1.5px solid var(--gray-300);
+    border: 1.5px solid #0f172a;
     border-radius: 12px;
     background: var(--white);
     font-size: 15px;
@@ -230,7 +230,7 @@
 .settings-textarea:focus {
     border-color: var(--blue);
     background: var(--white);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .settings-grid {
     display: grid;
@@ -397,7 +397,7 @@
                     <div style="display:flex; align-items:center; gap:20px; margin-bottom:32px;">
                         <div style="width:96px; height:96px; border-radius:50%; background:var(--blue); color:var(--white); display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:bold; overflow:hidden; border: 3px solid var(--blue);">
                             @if($mahasiswa && $mahasiswa->foto_profil)
-                                <img id="avatar-preview" src="{{ asset($mahasiswa->foto_profil) }}" style="width:100%;height:100%;object-fit:cover;">
+                                <img id="avatar-preview" src="{{ foto_profil_url($mahasiswa->foto_profil) }}" style="width:100%;height:100%;object-fit:cover;">
                             @else
                                 <img id="avatar-preview" src="" style="width:100%;height:100%;object-fit:cover;display:none;">
                                 <span id="avatar-initial">{{ strtoupper(substr($user->name, 0, 1)) }}</span>

@@ -227,25 +227,24 @@ class MahasiswaController extends Controller
         $fotoProfil = $mahasiswa->foto_profil;
         if ($request->hasFile('foto_profil')) {
             $file = $request->file('foto_profil');
-            $filename = 'profil_' . $mahasiswa->id . '_' . time() . '.' . $file->getClientOriginalExtension();
             
             // Check if Supabase Storage is configured
             if (config('filesystems.disks.supabase.key') && config('filesystems.disks.supabase.secret')) {
+                $filename = 'profil_' . $mahasiswa->id . '_' . time() . '.' . $file->getClientOriginalExtension();
                 try {
-                    // Upload to Supabase Storage
                     \Illuminate\Support\Facades\Storage::disk('supabase')->put('images/profil/' . $filename, file_get_contents($file));
-                    // Get public URL
                     $fotoProfil = \Illuminate\Support\Facades\Storage::disk('supabase')->url('images/profil/' . $filename);
                 } catch (\Exception $e) {
-                    return back()->withErrors(['foto_profil' => 'Gagal mengunggah foto ke Supabase. Pastikan variabel SUPABASE di Railway sudah diisi.']);
+                    return back()->withErrors(['foto_profil' => 'Gagal mengunggah foto ke Supabase.']);
                 }
             } else {
-                // Fallback to local public disk storage
+                // Store as base64 data URL in database (works on Railway ephemeral filesystem)
                 try {
-                    $path = $file->storeAs('images/profil', $filename, 'public');
-                    $fotoProfil = '/storage/' . $path;
+                    $imageData = file_get_contents($file->getRealPath());
+                    $mimeType = $file->getMimeType();
+                    $fotoProfil = 'data:' . $mimeType . ';base64,' . base64_encode($imageData);
                 } catch (\Exception $e) {
-                    return back()->withErrors(['foto_profil' => 'Gagal menyimpan foto secara lokal: ' . $e->getMessage()]);
+                    return back()->withErrors(['foto_profil' => 'Gagal memproses foto profil: ' . $e->getMessage()]);
                 }
             }
         }

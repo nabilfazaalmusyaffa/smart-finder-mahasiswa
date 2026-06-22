@@ -143,7 +143,7 @@
             <div class="public-profile-header">
                 <div class="public-profile-avatar-wrap">
                     @if($mahasiswa && $mahasiswa->foto_profil)
-                        <img src="{{ asset($mahasiswa->foto_profil) }}" style="width:100%; height:100%; object-fit:cover;">
+                        <img src="{{ foto_profil_url($mahasiswa->foto_profil) }}" style="width:100%; height:100%; object-fit:cover;">
                     @else
                         {{ strtoupper(substr($user->name, 0, 1)) }}
                     @endif
