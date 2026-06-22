@@ -130,23 +130,26 @@
 .setting-form-group select, 
 .setting-form-group textarea {
     width: 100%;
-    padding: 12px 16px;
+    padding: 14px 16px;
     border-radius: var(--radius-md);
-    border: 1px solid var(--gray-300);
+    border: 1.5px solid var(--gray-300);
     font-size: 14px;
     color: var(--dark);
     background: var(--white);
-    transition: border-color .2s;
+    transition: all .2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .setting-form-group input:focus, 
 .setting-form-group select:focus, 
 .setting-form-group textarea:focus {
     outline: none;
     border-color: var(--blue);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .setting-form-group textarea {
     resize: vertical;
-    min-height: 80px;
+    min-height: 120px;
 }
 
 /* Checkbox/Switch Style (simplified to checkbox) */
@@ -196,31 +199,38 @@
 .settings-input {
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid #dbe3ef;
-    border-radius: 16px;
-    background: #f8fbff;
+    border: 1.5px solid var(--gray-300);
+    border-radius: 12px;
+    background: var(--white);
     font-size: 15px;
     color: #0f172a;
     outline: none;
     transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .settings-input:focus {
-    border-color: #2563eb;
-    background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    border-color: var(--blue);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .settings-textarea {
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid #dbe3ef;
-    border-radius: 16px;
-    background: #f8fbff;
+    border: 1.5px solid var(--gray-300);
+    border-radius: 12px;
+    background: var(--white);
     font-size: 15px;
     color: #0f172a;
     outline: none;
     transition: all 0.2s ease;
     min-height: 120px;
     resize: vertical;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.settings-textarea:focus {
+    border-color: var(--blue);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .settings-grid {
     display: grid;

@@ -45,13 +45,25 @@ class SettingsController extends Controller
         if ($request->hasFile('foto_profil')) {
             $file = $request->file('foto_profil');
             $filename = time() . '_' . Str::slug($request->nama) . '.' . $file->getClientOriginalExtension();
-            try {
-                // Upload to Supabase Storage
-                \Illuminate\Support\Facades\Storage::disk('supabase')->put('images/profil/' . $filename, file_get_contents($file));
-                // Get public URL
-                $fotoProfilPath = \Illuminate\Support\Facades\Storage::disk('supabase')->url('images/profil/' . $filename);
-            } catch (\Exception $e) {
-                return back()->withErrors(['foto_profil' => 'Gagal mengunggah foto ke Supabase. Pastikan variabel SUPABASE di Railway sudah diisi.']);
+            
+            // Check if Supabase Storage is configured
+            if (config('filesystems.disks.supabase.key') && config('filesystems.disks.supabase.secret')) {
+                try {
+                    // Upload to Supabase Storage
+                    \Illuminate\Support\Facades\Storage::disk('supabase')->put('images/profil/' . $filename, file_get_contents($file));
+                    // Get public URL
+                    $fotoProfilPath = \Illuminate\Support\Facades\Storage::disk('supabase')->url('images/profil/' . $filename);
+                } catch (\Exception $e) {
+                    return back()->withErrors(['foto_profil' => 'Gagal mengunggah foto ke Supabase. Pastikan variabel SUPABASE di Railway sudah diisi.']);
+                }
+            } else {
+                // Fallback to local public disk storage
+                try {
+                    $path = $file->storeAs('images/profil', $filename, 'public');
+                    $fotoProfilPath = '/storage/' . $path;
+                } catch (\Exception $e) {
+                    return back()->withErrors(['foto_profil' => 'Gagal menyimpan foto secara lokal: ' . $e->getMessage()]);
+                }
             }
         }
 
